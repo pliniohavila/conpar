@@ -1,0 +1,15 @@
+Why is Git always asking for my password?
+
+If Git prompts you for a username and password every time 
+you try to interact with GitHub, you're probably using the 
+HTTPS clone URL for your repository.
+
+Using an HTTPS remote URL has some advantages:
+it's easier to set up than SSH, and usually works through
+strict firewalls and proxies. However, it also prompts
+you to enter your GitHub credentials every time you 
+pull or push a repository.
+
+You can configure Git to store your password for you. 
+If you'd like to set that up,
+read all about setting up password caching.
