@@ -2,12 +2,12 @@
 
 [ ] Estudar Tanenbaum pág.s 92 - 122 (paralelamente)
 [ ] http://www.yolinux.com/TUTORIALS/LinuxTutorialPosixThreads.html  
-[ ] https://www.youtube.com/watch?v=fXWgsC31RxQ
 [ ] Rewrite Problema-Produtor-Consumidor
+[ ] https://www.youtube.com/watch?v=fXWgsC31RxQ
 [ ] Rewrite philosophers
 [ ] https://hpc-tutorials.llnl.gov/posix/ 
-[ ] Terminar aulas UFAM 
 [ ] Rewrite Problema-Produtor-Consumidor 
+[ ] Terminar aulas UFAM 
 [ ] Rewrite philosophers
 [ ] Implementar Jantar dos Filósofos (final) com threads and mutex
 [ ] com threads and semaphore
