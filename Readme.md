@@ -31,6 +31,9 @@ Para utilizar, adicionamos a flag `-pthread` ao compilar os nossos códigos.
 
 # Sincronização de threads 
 
+## Deadlocks e Starvation
+
+
 ## Race Conditions
 
 Como vimos acima sobre `threads`, que diferente de processos, `threads` compartilham o mesmos recursos disponíveis para o processo a qual pertencem. Nesse cenário, pode acontecer comportamentos inesperados quando `threads` acessam um mesmo recurso ao mesmo tempo ou mesma região da memória. 
@@ -236,6 +239,101 @@ Uma explicação à chamada da função `pthread_self()`: ela retorna o ID da th
 
 ### Variáveis de Condição 
 
+Variáveis de condição são variáveis que suspende a execução do thread até que determinada condição seja atendida. Segundo Tanenbaum (2016), "_variáveis de condição permitem que threads sejam bloqueados devido a alguma condição não estar sendo atendida_".
+
+Deve-se atentar, que quando estamos lidando com variável de condição, sempre devemos associar ela com um mutex, o qual será responsável por bloquear a região crítica. 
+
+Acrescentando, segundo o OSTEP: a "_condition variable is an explicit queue that threads can put themselves on when some state of execution (i.e., some condition) is not as desired (by waiting on the condition); some other thread, when it changes said state, can then wake one (or more) of those waiting threads and thus allow them to continue (by signaling on the condition)_".
+
+Abaixo temos o código que utiliza variável de condição e mutex. Fazemos uso de dois threads. A execução varia entre a execução de cada thread, cada execução realiza uma atividade de incremento da variável `count`. Utilizamos a variável de condição para controlar a execução dos threads. 
+
+```c
+#include <stdio.h>
+#include <stdlib.h>
+#include <pthread.h>
+
+pthread_mutex_t count_mutex         = PTHREAD_MUTEX_INITIALIZER;
+pthread_cond_t  condition_var       = PTHREAD_COND_INITIALIZER;
+
+#define     COUNT_DONE      10
+#define     COUNT_HALT1     3
+#define     COUNT_HALT2     6
+
+void        *fcount1(void*);
+void        *fcount2(void*);
+
+int     main(void)
+{
+    volatile int    count;
+    pthread_t       th1;
+    pthread_t       th2;
+
+    count = 0;
+    pthread_create(&th1, NULL, fcount1, (void*)&count);
+    pthread_create(&th2, NULL, fcount2, (void*)&count);
+
+    pthread_join(th1, NULL);
+    pthread_join(th2, NULL);
+
+    printf("Final count: %d\n", count);
+    return (0);
+}
+
+void        *fcount1(void *ptr) 
+{
+    int     *to_increment;
+
+    to_increment = (int*)ptr;
+    while (1)
+    {
+        pthread_mutex_lock(&count_mutex);
+        pthread_cond_wait(&condition_var, &count_mutex);
+        *to_increment += 1;
+        printf("[fcount1] value: %d\n", *to_increment);
+        pthread_mutex_unlock(&count_mutex);
+        if (*to_increment >= COUNT_DONE)
+            pthread_exit(NULL);
+    }
+}
+
+void        *fcount2(void *ptr) 
+{
+    int     *to_increment;
+
+    to_increment = (int*)ptr;
+    while (1)
+    {
+        pthread_mutex_lock(&count_mutex);
+        if (*to_increment < COUNT_HALT1 || *to_increment > COUNT_HALT2)
+            pthread_cond_signal(&condition_var);
+        else 
+        {
+            *to_increment += 1;
+            printf("[fcount2] value: %d\n", *to_increment);
+        }
+        pthread_mutex_unlock(&count_mutex);
+        if (*to_increment >= COUNT_DONE)
+            pthread_exit(NULL);
+    }
+} 
+```
+
+Explicando as funções acima uti
+
+O macro `PTHREAD_COND_INITIALIZER`: 
+
+A função `pthread_cond_wait`: 
+http://man.yolinux.com/cgi-bin/man2html?cgi_command=pthread_cond_wait
+
+A função `pthread_cond_signal` 
+http://man.yolinux.com/cgi-bin/man2html?cgi_command=pthread_cond_signal
+
+Uma observação quanto ao uso de `while` e porque não podemos utilizar `if`. 
+
+## Semáforos 
+
+Outro mecanismo para controle de threads, são os semáforos. Bem o que são? 
+
 # Referências 
 
 - Tanenbaum, Andrew S. Sistemas operacionais modernos / Andrew S. Tanenbaum, Herbert Bos; tradução Jorge Ritter; revisão técnica Raphael Y. de Camargo. –  4. ed. – São Paulo: Pearson Education do Brasil, 2016
@@ -244,3 +342,4 @@ Uma explicação à chamada da função `pthread_self()`: ela retorna o ID da th
 - https://github.com/wdalmorra/Problema-Produtor-Consumidor/tree/master
 - https://hpc-tutorials.llnl.gov/posix/ 
 - https://wiki.inf.ufpr.br/maziero/lib/exe/fetch.php?media=socm:socm-12.pdf
+- https://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf
