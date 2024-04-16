@@ -1,6 +1,6 @@
 CC 		= gcc
 FLAGS	= -Wall -Wextra -Werror
-SANIT 	= -fsanitize=address
+SANIT 	= -fsanitize=thread
 DBG   	= -g3
 THREAD	= -pthread
 
@@ -8,7 +8,7 @@ all:
 	$(CC) $(FLAGS) main.c -o main
 
 sanit:
-	$(CC) $(FLAGS) $(SANIT) main.c -o main
+	$(CC) $(FLAGS) $(SANIT) race.c -o race
 
 run:
 	./main

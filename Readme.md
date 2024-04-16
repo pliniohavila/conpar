@@ -121,6 +121,42 @@ Count: 1506256
 Aproveitar e colocar uma nota sobre a palavra chave `volatile`. 
 
 
+### ThreadSanitizer
+
+Uma ferramenta que pode nos ajudar é ThreadSanitizer.
+
+
+Para utilizarmos, compilarmos nosso código com flag `-fsanitize=thread`. 
+Ao executar, é disparado um aviso que está ocorrendo uma condição de corrida à variável `count`. Vejamos: 
+
+```shell 
+❯ ./race
+==================
+WARNING: ThreadSanitizer: data race (pid=14464)
+  Read of size 4 at 0x56453e338014 by thread T2:
+    #0 increment <null> (race+0x141a)
+
+  Previous write of size 4 at 0x56453e338014 by thread T1:
+    #0 increment <null> (race+0x1432)
+
+  Location is global 'count' of size 4 at 0x56453e338014 (race+0x000000004014)
+
+  Thread T2 (tid=14467, running) created by main thread at:
+    #0 pthread_create ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:969 (libtsan.so.0+0x605b8)
+    #1 main <null> (race+0x1333)
+
+  Thread T1 (tid=14466, finished) created by main thread at:
+    #0 pthread_create ../../../../src/libsanitizer/tsan/tsan_interceptors_posix.cpp:969 (libtsan.so.0+0x605b8)
+    #1 main <null> (race+0x1333)
+
+SUMMARY: ThreadSanitizer: data race (/mnt/c/Users/win11/lab/conpar/yolinux/race+0x141a) in increment
+==================
+Count: 27076
+ThreadSanitizer: reported 1 warnings
+```
+
+Por mais informações, veja: <https://www.cs.columbia.edu/~junfeng/11fa-e6121/papers/thread-sanitizer.pdf>
+
 Diante desse cenários que temos a **sincronização de *threads***. 
 
 ## Mecanismos para lidar com sincronização de threads
@@ -343,3 +379,4 @@ Outro mecanismo para controle de threads, são os semáforos. Bem o que são?
 - https://hpc-tutorials.llnl.gov/posix/ 
 - https://wiki.inf.ufpr.br/maziero/lib/exe/fetch.php?media=socm:socm-12.pdf
 - https://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf
+- https://www.cs.columbia.edu/~junfeng/11fa-e6121/papers/thread-sanitizer.pdf 
