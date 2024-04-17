@@ -22,8 +22,7 @@ pthread_mutex_t     response_protect    = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t      cond                = PTHREAD_COND_INITIALIZER;
 int                 finished            = 0;
 int                 buf_filled          = 0;
-int                 buf_empty           = 0;
-int                 SLEEP               = 1;
+int                 buf_empty           = 1;
 int                 lines_size          = 0;
 int                 counter_str         = 0;
 char                *lines[MAX_LINES];
@@ -37,7 +36,8 @@ int     main(int argc, char **argv)
     int             threads_number;
     pthread_t       producter;
     int             i;
-
+ 
+    strcpy(str_search, argv[2]);
     if (argc < 2)
         exit(1);
     threads_number = sysconf(_SC_NPROCESSORS_ONLN);
@@ -69,29 +69,31 @@ int     main(int argc, char **argv)
 
 void    *producter_worker(void *filename)
 {
+    int     fd;
+
     pthread_mutex_lock(&data_protect);
     arq = fopen((char*)filename, "r");
-    // assert(arq);
+    fd = fileno(arq);
+    if (fd < 0) exit(1);
     pthread_mutex_unlock(&data_protect);
-    
-    while(arq) 
+
+    while(buf_empty) 
     {
         pthread_mutex_lock(&data_protect);
         while (buf_filled)
             pthread_cond_wait(&cond, &data_protect);
         save_line();
-        buf_filled = 0;
-        pthread_cond_signal(&cond);
+        if (lines_size == 5)
+        {
+            buf_empty = 0;
+            pthread_cond_signal(&cond);
+            // pthread_mutex_unlock(&data_protect);
+            // break;
+        }
         pthread_mutex_unlock(&data_protect);
-        if (SLEEP)
-            sleep(0.1);
     }
-    
-    pthread_mutex_lock(&data_protect);
-    finished = 1;
-    pthread_mutex_unlock(&data_protect);
-
-    pthread_exit(NULL);
+    return (void*)0;
+    // pthread_exit(NULL);
 }
 
 void    *consumer_work(void *argv)
@@ -100,16 +102,11 @@ void    *consumer_work(void *argv)
     static int  counter_threads = 0;
     char        *s;
 
-    // wait = 0;
-    // pthread_mutex_lock(&data_protect);
-    // printf("Created Thread: %d\n", *((int*)&i));
     counter_threads++;
-    printf("Created Thread: %d\n", counter_threads);
-    // pthread_mutex_unlock(&data_protect);
-    while (!finished || lines_size > 0)
+    while (buf_filled)
     {
         pthread_mutex_lock(&data_protect);
-        while(buf_empty && lines_size > 0)
+        while(buf_empty)
             pthread_cond_wait(&cond, &data_protect);
         buf_filled = 0;
         s = consume_line();
@@ -118,16 +115,11 @@ void    *consumer_work(void *argv)
         pthread_mutex_unlock(&data_protect);
         
         compute_string(s);
-
-        if (SLEEP)
-            sleep(0.1);
     }
     
-    // pthread_mutex_lock(&data_protect);
     printf("Thread: %d\n", counter_threads);
-    // pthread_mutex_unlock(&data_protect);
-    
-    pthread_exit(NULL);
+    return (void*)0;
+    // pthread_exit(NULL);
 }
 
 void    save_line(void)
@@ -139,9 +131,13 @@ void    save_line(void)
     n = 0;
     if (getline(&s, &n, arq) == -1)
     {
-        free(s);
-        perror("getline");
-        exit(errno);
+        if (feof(arq)) {
+            if (s != NULL) free(s);
+            return;
+        } else {
+            perror("getline");
+            exit(errno);
+        }
     }
     lines[lines_size] = s;
     lines_size++;
@@ -159,8 +155,9 @@ char    *consume_line(void)
     {
         s = lines[index];
         index++;
+        lines_size--;
 
-        if (lines_size == 5) 
+        if (lines_size <= 0) 
         {
             buf_empty = 1;
             index = 0;
@@ -176,13 +173,14 @@ void    compute_string(char *string)
     if (strlen(string) == 0)
         return;
     substr = strstr(string, str_search);
+    printf("[compute_string]substr: %s\n", substr);
     if (substr != NULL)
     {
         pthread_mutex_lock(&response_protect);
         counter_str++;
         pthread_mutex_unlock(&response_protect);
         pthread_mutex_lock(&data_protect);
-        free(string);
+        if (string != NULL) free(string);
         pthread_mutex_unlock(&data_protect);
     }
 }

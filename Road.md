@@ -1,6 +1,6 @@
 # Road 
 
-- [ ] Estudar Tanenbaum pág.s 92 - 122 (paralelamente)
+- [x] Estudar Tanenbaum pág.s 92 - 122 (paralelamente)
 - [x] http://www.yolinux.com/TUTORIALS/LinuxTutorialPosixThreads.html  
 - [ ] Rewrite Problema-Produtor-Consumidor
 - [x] https://www.youtube.com/watch?v=fXWgsC31RxQ
