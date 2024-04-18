@@ -1,6 +1,6 @@
 CC 		= gcc
 FLAGS	= -Wall -Wextra -Werror
-SANIT 	= -fsanitize=address
+SANIT 	= -fsanitize=thread
 DBG   	= -g3
 THREAD	= -pthread
 

@@ -1,0 +1,2 @@
+https://en.wikipedia.org/wiki/Dining_philosophers_problem
+https://www.youtube.com/watch?v=zOpzGHwJ3MU
