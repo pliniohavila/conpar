@@ -4,11 +4,11 @@
 - [x] http://www.yolinux.com/TUTORIALS/LinuxTutorialPosixThreads.html  
 - [x] Rewrite Problema-Produtor-Consumidor
 - [x] https://www.youtube.com/watch?v=fXWgsC31RxQ
-- [ ] Rewrite philosophers
+- [ ] Rewrite philosophers https://github.com/zelhajou/42-philosophers
 - [ ] https://hpc-tutorials.llnl.gov/posix/ 
 - [ ] Rewrite Problema-Produtor-Consumidor 
 - [ ] Terminar aulas UFAM 
-- [ ] Rewrite philosophers
+- [ ] Rewrite philosophers https://github.com/zelhajou/42-philosophers
 - [ ] Implementar Jantar dos Filósofos (final) com threads and mutex
 - [ ] com threads and semaphore
 - [ ] com processes and semaphore

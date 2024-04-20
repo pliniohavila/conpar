@@ -117,8 +117,9 @@ Count: 150643
 Count: 1506256
 ```
 
-[FALAR SOBRE VOLATILE]
-Aproveitar e colocar uma nota sobre a palavra chave `volatile`. 
+Aproveitar e colocar uma nota sobre o modificador `volatile`. 
+
+Ele indica para o compilador que variável pode ser modificada por fatores externos, aplicando uma restrição às otimições realizadas pelo compilador. 
 
 
 ### ThreadSanitizer
@@ -380,3 +381,5 @@ Outro mecanismo para controle de threads, são os semáforos. Bem o que são?
 - https://wiki.inf.ufpr.br/maziero/lib/exe/fetch.php?media=socm:socm-12.pdf
 - https://pages.cs.wisc.edu/~remzi/OSTEP/threads-cv.pdf
 - https://www.cs.columbia.edu/~junfeng/11fa-e6121/papers/thread-sanitizer.pdf 
+- https://pt.stackoverflow.com/questions/10175/para-que-serve-o-modificador-volatile-do-c-c
+- https://embarcados.com.br/modificadores-de-acesso-na-linguagem-c/
