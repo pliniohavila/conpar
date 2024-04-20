@@ -4,7 +4,7 @@ https://github.com/zelhajou/42-philosophers
 
 https://github.com/AbderrSfa/philosophers
 
-https://github.com/IamShubhamGupto/OS_Lab_UE18CS305/tree/master/PES1201801295_SHUBHAMGUPTA_WEEK12-
+https://github.com/IamShubhamGupto/OS_Lab_UE18CS305/blob/master/PES1201801295_SHUBHAMGUPTA_WEEK12-13/Week12.c [NOW]
 https://github.com/TheRealYoussef/The-Dining-Philosophers-Problem/blob/master/The-Dining-Philosophers-Problem.c
 
 
