@@ -1,6 +1,7 @@
 //  gcc pc1.c -fsanitize=thread -pthread -g3 -o pc1
 #include <stdio.h>
 #include <unistd.h>
+#include <string.h>
 #include <pthread.h>
 
 #define FALSE 0
@@ -65,6 +66,7 @@ void    *consumer(void *ptr)
     printf("Consumer %id starts", id);
     while (!finish)
     {
+        printf("Consumer %d finish %d\n", id, finish);
         do
         {
             pthread_mutex_lock(&mutex);
@@ -80,36 +82,50 @@ void    *consumer(void *ptr)
         pthread_mutex_unlock(&mutex);
         printf("Consumer %d consume item %d\n", id, item);
         sleep(1);
-        
-        pthread_mutex_lock(&mutex_finish);
-        if (producers_finisheds > 2)
-            finish = TRUE;
-        pthread_mutex_unlock(&mutex_finish);
-        // while (!__sync_bool_compare_and_swap(&finish, FALSE, TRUE)) {}
     } 
     printf("Consumer %d finished\n", id);
-    return ((void*)0);
+    return (NULL);
 }
 
 int     main(void)
 {
-    pthread_t   producers[3];
-    pthread_t   consumers[2];
-    int         ths[3] = {1, 2, 3};
+    int         ths_numbers;
+    pthread_t   threads[6];
+    int         ths[6];
+    int         i;
+
 
     printf("Starts producers and consumrers\n");
+    ths_numbers = 6;
+    for (i = 0; i < 3; i++)
+    {
+        ths[i] = i;
+        pthread_create(&threads[i], NULL, producer, (void*)&ths[i]);
+    }
 
-    for (int i = 0; i < 3; i++)
-        pthread_create(&producers[i], NULL, producer, (void*)&ths[i]);
+    for (; i < ths_numbers; i++)
+    {
+        ths[i] = i;
+        pthread_create(&threads[i], NULL, consumer, (void*)&ths[i]);
+    }
 
-    for (int i = 0; i < 2; i++)
-        pthread_create(&consumers[i], NULL, consumer, (void*)&ths[i]);
+    sleep(10);
+    finish = TRUE;
 
-    for (int i = 0; i < 3; i++)
-        pthread_join(producers[i], NULL);
+    for (i = 0; i < ths_numbers; i++)
+    {
+        if (pthread_cancel(threads[i]) != 0)
+        {
+            printf("thread[%d] ", i);
+            perror("main pthread_cancel error");
+        }
+    }
 
-    for (int i = 0; i < 2; i++)
-        pthread_join(consumers[i], NULL);
-
+    for (i = 0; i < ths_numbers; i++)
+    {
+        if (pthread_join(threads[i], NULL) != 0)
+            perror("main pthread_join error");
+    }
+    printf("All threads joined, destroying mutexes/semaphores...\n");
     return (0);
 }

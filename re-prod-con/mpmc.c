@@ -39,6 +39,9 @@ int     main(void)
         pthread_create(&threads[thread_id], NULL, consumer, (void*)&data[thread_id]);
     }
 
+    // sleep(10);
+    // for (int i )
+
     for (int i = 0; i < THREAD_COUNT; i++)
         pthread_join(threads[i], NULL);
 

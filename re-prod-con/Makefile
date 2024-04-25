@@ -20,7 +20,7 @@ run2:
 	./main arquivos_teste/teste3-conteudo.txt Jude
 
 %: %.c
-	$(CC) $(FLAGS) $(THREAD) $< -o $@ 
+	$(CC) $(FLAGS) $(THREAD) $(DBG) $< -o $@ 
 
 clean: 
 	rm main

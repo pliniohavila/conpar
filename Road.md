@@ -5,11 +5,10 @@
 - [x] Rewrite Problema-Produtor-Consumidor
 - [x] https://www.youtube.com/watch?v=fXWgsC31RxQ
 - [x] Rewrite philosophers 
-- [ ] https://en.wikipedia.org/wiki/Producer–consumer_problem
-- [ ] https://en.wikipedia.org/wiki/Dining_philosophers_problem
-- [ ] Rewrite Problema-Produtor-Consumidor 
-- [ ] Terminar aulas UFAM 
-- [ ] Rewrite philosophers 
+- [x] https://en.wikipedia.org/wiki/Producer–consumer_problem
+- [x] https://en.wikipedia.org/wiki/Dining_philosophers_problem
+- [ ] Rewrite Problema-Produtor-Consumidor https://github.com/kiredroffas/Producer-Consumer-Problem/tree/master 3x
+- [ ] Terminar aulas UFAM  
 - Implementar Jantar dos Filósofos | Produtor-Consumirdor (final) 
+- [ ] com threads and mutex
 - [ ] com threads and semaphore
-- [ ] com processes and semaphore
