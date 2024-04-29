@@ -31,9 +31,6 @@ Para utilizar, adicionamos a flag `-pthread` ao compilar os nossos códigos.
 
 # Sincronização de threads 
 
-## Deadlocks e Starvation
-
-
 ## Race Conditions
 
 Como vimos acima sobre `threads`, que diferente de processos, `threads` compartilham o mesmos recursos disponíveis para o processo a qual pertencem. Nesse cenário, pode acontecer comportamentos inesperados quando `threads` acessam um mesmo recurso ao mesmo tempo ou mesma região da memória. 
@@ -370,6 +367,15 @@ Uma observação quanto ao uso de `while` e porque não podemos utilizar `if`.
 ## Semáforos 
 
 Outro mecanismo para controle de threads, são os semáforos. Bem o que são? 
+
+Desenvolvidos pelo cara, o E. W. Dijkstra, é a utilização de uma variável inteira para contar o número de sinais de acordar salvos para uso futuro, assim ensina o Tanenbaum (2016).
+
+Realizamos duas operações básicas sobre semáforos: incrementar ou decrementar. 
+Quando desejamos sinalizar que operações estão disponíveis para serem realizar, incrementamos o valor do semáforo. 
+E a cada vez que um operação é realizada, o decrementamos até chegar o valor de zero. 
+O ato de decrementar o semáforo dever ser realizado antes de realizar alguma atividade. Funciona como uma verificação de disponibilidade. 
+
+Se após, o valor for superior a (-1), o thread segue o fluxo de execução, caso contrário, ela vai dormir até ser acordado novamente para uma nova tentativa. 
 
 # Referências 
 
