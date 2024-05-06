@@ -15,12 +15,41 @@ Para este estudo estarei utilizando a Linguagem C e a biblioteca `POSIX threads`
 
 Para utilizar, adicionamos a flag `-pthread` ao compilar os nossos códigos. 
 
+Exemplo simples de uso de threads na linguagem C. 
 
-[COLOCAR UM CÓDIGO SIMPLES DE UMA THREAD]
+```c 
+#include <stdio.h>
+#include <pthread.h>
 
+void    *thread_function(void *arg);
 
+int     main(void) {
+  pthread_t     thread1;
+  pthread       thread2;
+  int           i;
 
-[EXPLICAÇÃO SOBRE AS FUNÇÕES UTILIZADAS]
+  pthread_create(&thread1, NULL, thread_function, NULL);
+  pthread_create(&thread2, NULL, thread_function, NULL);
+
+  pthread_join(thread1, NULL);
+  pthread_join(thread2, NULL);
+
+  printf("Threads finalizadas.\n");
+
+  return 0;
+}
+
+void    *thread_function(void *arg) {
+  int       i;
+
+  for (i = 1; i <= 10; i++) {
+    printf("Thread ID: %ld, Número: %d\n", pthread_self(), i);
+  }
+
+  pthread_exit(NULL);
+}
+```
+Explicação das funções acima:
 
 |Função|Descrição|
 | --- | --- |
@@ -122,7 +151,6 @@ Ele indica para o compilador que variável pode ser modificada por fatores exter
 ### ThreadSanitizer
 
 Uma ferramenta que pode nos ajudar é ThreadSanitizer.
-
 
 Para utilizarmos, compilarmos nosso código com flag `-fsanitize=thread`. 
 Ao executar, é disparado um aviso que está ocorrendo uma condição de corrida à variável `count`. Vejamos: 
